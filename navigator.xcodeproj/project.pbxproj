@@ -13,8 +13,18 @@
 		A428AB541EC6564700FF4D97 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A428AB531EC6564700FF4D97 /* GameScene.swift */; };
 		A428AB561EC6564700FF4D97 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A428AB551EC6564700FF4D97 /* GameViewController.swift */; };
 		A428AB591EC6564700FF4D97 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A428AB571EC6564700FF4D97 /* Main.storyboard */; };
-		A428AB5B1EC6564700FF4D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A428AB5A1EC6564700FF4D97 /* Assets.xcassets */; };
 		A428AB5E1EC6564700FF4D97 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A428AB5C1EC6564700FF4D97 /* LaunchScreen.storyboard */; };
+		A428AB661EC6977100FF4D97 /* navigator.sks in Resources */ = {isa = PBXBuildFile; fileRef = A428AB651EC6977100FF4D97 /* navigator.sks */; };
+		A428AB6C1EC6E9C200FF4D97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A428AB6B1EC6E9C200FF4D97 /* Assets.xcassets */; };
+		A428AB701EC6FE4E00FF4D97 /* bkg.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A428AB6E1EC6FE4E00FF4D97 /* bkg.mp3 */; };
+		A428AB711EC6FE4E00FF4D97 /* a.wav in Resources */ = {isa = PBXBuildFile; fileRef = A428AB6F1EC6FE4E00FF4D97 /* a.wav */; };
+		A428AB731EC6FEFF00FF4D97 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A428AB721EC6FEFF00FF4D97 /* GameOverScene.swift */; };
+		A42AD0F81ECBD8C300508931 /* boom.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A42AD0F71ECBD8C300508931 /* boom.mp3 */; };
+		A42AD0FA1ECBD97800508931 /* finalBoom.sks in Resources */ = {isa = PBXBuildFile; fileRef = A42AD0F91ECBD97800508931 /* finalBoom.sks */; };
+		A42AD0FC1ECC2A1C00508931 /* GemMissiles.sks in Resources */ = {isa = PBXBuildFile; fileRef = A42AD0FB1ECC2A1C00508931 /* GemMissiles.sks */; };
+		A4A8127C1EC82E3800FC045D /* boom.sks in Resources */ = {isa = PBXBuildFile; fileRef = A4A8127B1EC82E3800FC045D /* boom.sks */; };
+		A4A8127E1EC8303D00FC045D /* boomBig.sks in Resources */ = {isa = PBXBuildFile; fileRef = A4A8127D1EC8303D00FC045D /* boomBig.sks */; };
+		A4A812821EC831B900FC045D /* smoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = A4A812811EC831B900FC045D /* smoke.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,9 +35,19 @@
 		A428AB531EC6564700FF4D97 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		A428AB551EC6564700FF4D97 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		A428AB581EC6564700FF4D97 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		A428AB5A1EC6564700FF4D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A428AB5D1EC6564700FF4D97 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A428AB5F1EC6564700FF4D97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A428AB651EC6977100FF4D97 /* navigator.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = navigator.sks; sourceTree = "<group>"; };
+		A428AB6B1EC6E9C200FF4D97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A428AB6E1EC6FE4E00FF4D97 /* bkg.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bkg.mp3; sourceTree = "<group>"; };
+		A428AB6F1EC6FE4E00FF4D97 /* a.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = a.wav; sourceTree = "<group>"; };
+		A428AB721EC6FEFF00FF4D97 /* GameOverScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
+		A42AD0F71ECBD8C300508931 /* boom.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = boom.mp3; sourceTree = "<group>"; };
+		A42AD0F91ECBD97800508931 /* finalBoom.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = finalBoom.sks; sourceTree = "<group>"; };
+		A42AD0FB1ECC2A1C00508931 /* GemMissiles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GemMissiles.sks; sourceTree = "<group>"; };
+		A4A8127B1EC82E3800FC045D /* boom.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = boom.sks; sourceTree = "<group>"; };
+		A4A8127D1EC8303D00FC045D /* boomBig.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = boomBig.sks; sourceTree = "<group>"; };
+		A4A812811EC831B900FC045D /* smoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = smoke.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,17 +80,35 @@
 		A428AB4C1EC6564700FF4D97 /* navigator */ = {
 			isa = PBXGroup;
 			children = (
+				A428AB6D1EC6FE2F00FF4D97 /* sounds */,
 				A428AB4D1EC6564700FF4D97 /* AppDelegate.swift */,
 				A428AB4F1EC6564700FF4D97 /* GameScene.sks */,
 				A428AB511EC6564700FF4D97 /* Actions.sks */,
 				A428AB531EC6564700FF4D97 /* GameScene.swift */,
 				A428AB551EC6564700FF4D97 /* GameViewController.swift */,
 				A428AB571EC6564700FF4D97 /* Main.storyboard */,
-				A428AB5A1EC6564700FF4D97 /* Assets.xcassets */,
 				A428AB5C1EC6564700FF4D97 /* LaunchScreen.storyboard */,
 				A428AB5F1EC6564700FF4D97 /* Info.plist */,
+				A428AB651EC6977100FF4D97 /* navigator.sks */,
+				A428AB6B1EC6E9C200FF4D97 /* Assets.xcassets */,
+				A428AB721EC6FEFF00FF4D97 /* GameOverScene.swift */,
+				A4A8127B1EC82E3800FC045D /* boom.sks */,
+				A4A8127D1EC8303D00FC045D /* boomBig.sks */,
+				A4A812811EC831B900FC045D /* smoke.sks */,
+				A42AD0F91ECBD97800508931 /* finalBoom.sks */,
+				A42AD0FB1ECC2A1C00508931 /* GemMissiles.sks */,
 			);
 			path = navigator;
+			sourceTree = "<group>";
+		};
+		A428AB6D1EC6FE2F00FF4D97 /* sounds */ = {
+			isa = PBXGroup;
+			children = (
+				A428AB6E1EC6FE4E00FF4D97 /* bkg.mp3 */,
+				A42AD0F71ECBD8C300508931 /* boom.mp3 */,
+				A428AB6F1EC6FE4E00FF4D97 /* a.wav */,
+			);
+			name = sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -133,11 +171,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A428AB711EC6FE4E00FF4D97 /* a.wav in Resources */,
 				A428AB591EC6564700FF4D97 /* Main.storyboard in Resources */,
+				A4A8127C1EC82E3800FC045D /* boom.sks in Resources */,
+				A428AB661EC6977100FF4D97 /* navigator.sks in Resources */,
+				A42AD0FA1ECBD97800508931 /* finalBoom.sks in Resources */,
 				A428AB501EC6564700FF4D97 /* GameScene.sks in Resources */,
-				A428AB5B1EC6564700FF4D97 /* Assets.xcassets in Resources */,
 				A428AB5E1EC6564700FF4D97 /* LaunchScreen.storyboard in Resources */,
+				A4A812821EC831B900FC045D /* smoke.sks in Resources */,
+				A428AB6C1EC6E9C200FF4D97 /* Assets.xcassets in Resources */,
 				A428AB521EC6564700FF4D97 /* Actions.sks in Resources */,
+				A428AB701EC6FE4E00FF4D97 /* bkg.mp3 in Resources */,
+				A4A8127E1EC8303D00FC045D /* boomBig.sks in Resources */,
+				A42AD0FC1ECC2A1C00508931 /* GemMissiles.sks in Resources */,
+				A42AD0F81ECBD8C300508931 /* boom.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +198,7 @@
 				A428AB541EC6564700FF4D97 /* GameScene.swift in Sources */,
 				A428AB561EC6564700FF4D97 /* GameViewController.swift in Sources */,
 				A428AB4E1EC6564700FF4D97 /* AppDelegate.swift in Sources */,
+				A428AB731EC6FEFF00FF4D97 /* GameOverScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +362,7 @@
 				A428AB641EC6564700FF4D97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
