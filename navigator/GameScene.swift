@@ -11,9 +11,9 @@ import GameplayKit
 struct PhysicsCategory {
     static let None      : UInt32 = 0
     static let All       : UInt32 = UInt32.max
-    static let Obsticle   : UInt32 = 0b1       // 1
-    static let Food: UInt32 = 0b10
-    static let Ship: UInt32 = 0b100
+    static let Obsticle   : UInt32 = 0x1 << 1      // 1
+    static let Food: UInt32 = 0x1 << 2
+    static let Ship: UInt32 = 0x1 << 3
 }
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
@@ -31,7 +31,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
         self.smoke.physicsBody = SKPhysicsBody(rectangleOf: self.smoke.frame.size)
         
-        let shipTexture = SKTexture.init(imageNamed: "ship")
+        let shipTexture = SKTexture.init(imageNamed: "ship1")
         ship.physicsBody = SKPhysicsBody(texture: shipTexture, size: shipTexture.size())
         ship.physicsBody?.isDynamic = true
         ship.physicsBody?.categoryBitMask = PhysicsCategory.Ship
@@ -128,7 +128,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             let emitterNode = SKEmitterNode(fileNamed: "finalBoom.sks")
             emitterNode!.particlePosition = contact.contactPoint
             self.addChild(emitterNode!)
-            self.ship.isHidden = true   
+            self.ship.isHidden = true
+          
            for child in self.children {
                 x = x + 1;
                 if x == self.children.count{
@@ -143,21 +144,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
         }
         else if(secondBody.node!.name == "food"){
-            
-            let label = self.childNode(withName: "scoreLabel") as! SKLabelNode
-            
-            label.fontSize = 92.0;
-            var currentScore = Int.init(label.text!)
-            currentScore = currentScore! + 10;
-            label.text = String.init(currentScore!)
+            updateScoreBy(points: 10)
             run(SKAction.playSoundFileNamed("a.wav", waitForCompletion: false))
-
-            
             secondBody.node!.removeFromParent()
-            label.fontSize = 72.0;
             let gun = self.childNode(withName: "gun")
             if (gun?.alpha)! < CGFloat(1.0) {
                 gun!.alpha = gun!.alpha + 0.1;
+               
             }
 
         }
@@ -218,6 +211,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
     }
     func blowUpAObsticle(obsticle : SKNode){
+        updateScoreBy(points: 20)
         explosionBig(pos: CGPoint.init(x: obsticle.position.x, y: obsticle.position.y - 200))
         obsticle.removeFromParent()
     }
@@ -281,7 +275,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         let actionMoveDone = SKAction.removeFromParent()
         projectile.run(SKAction.sequence([actionMove, actionMoveDone]))
     }
-    
+    func updateScoreBy(points : Int){
+        var currentScore = Int.init(label.text!)
+        currentScore = currentScore! + points;
+        label.text = String.init(currentScore!)
+        label.run(SKAction.sequence([SKAction.run {
+            self.label.fontSize = 122.0;
+            self.label.fontColor = UIColor.green
+            },SKAction.run {
+                self.label.fontSize = 72.0;
+                self.label.fontColor = UIColor.init(red: 130, green: 172, blue: 138, alpha: 1.0)
+            }]))
+    }
     func moveShipLeft() {
 
         let currentPos = self.ship.position;
@@ -313,7 +318,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     override func didMove(to view: SKView) {
         doBasicInitializations()
-self.view!.showsPhysics = true
                run(SKAction.repeatForever(
             SKAction.sequence([
                 SKAction.run(addObsticles),
@@ -367,7 +371,7 @@ self.view!.showsPhysics = true
             object = SKSpriteNode(texture: obsticleTexture)
             object.physicsBody?.categoryBitMask = PhysicsCategory.Obsticle // 3
             object.physicsBody?.contactTestBitMask = PhysicsCategory.Ship // 4
-            object.physicsBody = SKPhysicsBody(texture: obsticleTexture, size: object.texture!.size())
+            object.physicsBody = SKPhysicsBody(texture: obsticleTexture, size: CGSize.init(width: obsticleTexture.size().width/2 , height: obsticleTexture.size().height/2))
  
             object.name = "obsticle"
             object.physicsBody?.usesPreciseCollisionDetection = true
