@@ -17,21 +17,73 @@ struct PhysicsCategory {
 }
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
+    
+    let backgroundMusicSoundFile : String = "bkg.mp3"
+    let smallExplosionEmmiter : String = "boom.sks"
+    let bigExplosionEmmitter : String = "boomBig.sks"
+    
+    let level_2_scoreLimit = 201
+    let level_3_scoreLimit = 401
+    let level_4_scoreLimit = 601
+    
+    let level_1_obsticle  : String = "obsticle_level_1"
+    let level_2_obsticle  : String = "obsticle_level_2"
+    let level_3_obsticle  : String = "obsticle_level_3"
+    let level_4_obsticle  : String = "obsticle_level_4"
+    
+    let level_1_gem  : String = "gem_level_1"
+    let level_2_gem  : String = "gem_level_2"
+    let level_3_gem  : String = "gem_level_3"
+    let level_4_gem  : String = "gem_level_4"
+    
+    let level_1_obsticleThreshold : Float = 0.5
+    let level_2_obsticleThreshold : Float = 0.6
+    let level_3_obsticleThreshold : Float = 0.7
+    let level_4_obsticleThreshold : Float = 0.8
+
+    let level_1_backgroundImage : String = "background_level_1"
+    let level_2_backgroundImage : String  = "background_level_2"
+    let level_3_backgroundImage : String  = "background_level_3"
+    let level_4_backgroundImage : String  = "background_level_4"
+    
+    let shipImage : String  = "ship"
+    let smokeImage : String  = "smoke"
+    let scoreImage : String  = "scoreLabel"
+    let highScoreStore : String  = "spaceHighScore"
+
     var ship : SKSpriteNode = SKSpriteNode.init()
     var smoke : SKNode = SKNode.init()
     var gem : SKSpriteNode = SKSpriteNode.init()
     var label : SKLabelNode = SKLabelNode()
+    var currentHighScore = 0
+    var isNewHighScore : Bool = false
+    var scoreLabelColor : UIColor = UIColor.white;
+    var currentLevel : Int = 1;
+    var obsticleThreshold : Float = 0.5
+    var foodThreshold : Float = 0.5
+    var currentObsticleImage : String = "obsticle_level_1"
+    var currentGemImage : String = "gem_level_1"
+    var currentBackgroundImage : String = "background_level_1"
+    
+    
     
     func doBasicInitializations(){
-        self.ship = self.childNode(withName: "ship") as! SKSpriteNode
-        self.smoke = self.childNode(withName: "smokeR")!
-        self.label = self.childNode(withName: "scoreLabel") as! SKLabelNode
+        makeChangesForLevel(level: 1)
+        self.ship = self.childNode(withName: shipImage) as! SKSpriteNode
+        self.smoke = self.childNode(withName: smokeImage)!
+        self.label = self.childNode(withName: scoreImage) as! SKLabelNode
+        if UserDefaults.standard.value(forKey: highScoreStore) != nil{
+            self.currentHighScore = UserDefaults.standard.integer(forKey: highScoreStore)
+        }
+        else{
+            self.currentHighScore = 0
 
+        }
         self.physicsWorld.contactDelegate = self;
 
         self.smoke.physicsBody = SKPhysicsBody(rectangleOf: self.smoke.frame.size)
         
-        let shipTexture = SKTexture.init(imageNamed: "ship1")
+        let shipTexture = SKTexture.init(imageNamed: shipImage)
         ship.physicsBody = SKPhysicsBody(texture: shipTexture, size: shipTexture.size())
         ship.physicsBody?.isDynamic = true
         ship.physicsBody?.categoryBitMask = PhysicsCategory.Ship
@@ -43,7 +95,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
     var crazy = false;
     override func update(_ currentTime: TimeInterval) {
-        moveBKG()
+        moveBackground()
         updateScore()
     }
     
@@ -51,6 +103,21 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         var currentScore = Int.init(label.text!)
         currentScore = currentScore! + 1;
         label.text = String.init(currentScore!)
+        if !self.isNewHighScore && (currentScore! > self.currentHighScore)  {
+            self.isNewHighScore = true;
+            self.scoreLabelColor = UIColor.orange
+            label.fontColor = self.scoreLabelColor;
+            UserDefaults.standard.set(currentScore!, forKey: highScoreStore)
+        }
+        if currentScore! == level_2_scoreLimit {
+            makeChangesForLevel(level: 2)
+        }
+        if currentScore! == level_3_scoreLimit {
+            makeChangesForLevel(level: 3)
+        }
+        if currentScore! == level_4_scoreLimit {
+            makeChangesForLevel(level: 4)
+        }
     }
 
     
@@ -116,11 +183,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             let trembleY = SKAction.sequence([movey1,movey4,movey2,movey3])
 
             var x = 1;
+            
+            if self.isNewHighScore {
+                var currentScore = Int.init(label.text!)
+                currentScore = currentScore! + 1;
+                UserDefaults.standard.set(currentScore!, forKey: "spaceHighScore")
+            }
+            
             let seq = SKAction.sequence([trembleX,trembleY,SKAction.wait(forDuration: 0.3),SKAction.run {
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
                 let label = self.childNode(withName: "scoreLabel") as! SKLabelNode
                 let currentScore = Int.init(label.text!)
-                let gameOverScene = GameOverScene(size: self.size, score: currentScore!)
+                let gameOverScene = GameOverScene(size: self.size, score: currentScore!, isHighScore: self.isNewHighScore)
                  self.view?.presentScene(gameOverScene, transition: reveal)
             }])
             let boomShankar = SKAudioNode(fileNamed: "boom.mp3")
@@ -157,7 +231,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     
     func explosionSmall(pos: CGPoint) {
-        let emitterNode = SKEmitterNode(fileNamed: "boom.sks")
+        let emitterNode = SKEmitterNode(fileNamed: smallExplosionEmmiter)
         emitterNode!.particlePosition = pos
         self.addChild(emitterNode!)
         self.run(SKAction.wait(forDuration: 2), completion: { emitterNode!.removeFromParent() })
@@ -165,7 +239,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     
     func explosionBig(pos: CGPoint) {
-        let emitterNode = SKEmitterNode(fileNamed: "boomBig.sks")
+        let emitterNode = SKEmitterNode(fileNamed: bigExplosionEmmitter)
         emitterNode!.particlePosition = pos
         self.addChild(emitterNode!)
         self.run(SKAction.wait(forDuration: 2), completion: { emitterNode!.removeFromParent() })
@@ -210,11 +284,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
         
     }
+    
     func blowUpAObsticle(obsticle : SKNode){
         updateScoreBy(points: 20)
         explosionBig(pos: CGPoint.init(x: obsticle.position.x, y: obsticle.position.y - 200))
         obsticle.removeFromParent()
     }
+    
     func fireGemGun(){
         self.gem = self.childNode(withName: "gun") as! SKSpriteNode
         for node in self.children {
@@ -277,6 +353,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     func updateScoreBy(points : Int){
         var currentScore = Int.init(label.text!)
+        if currentScore! > (level_2_scoreLimit - (points + 1)) && currentScore! < level_2_scoreLimit {
+            makeChangesForLevel(level: 2)
+        }
+        if currentScore! > (level_3_scoreLimit - (points + 1)) && currentScore! < level_3_scoreLimit {
+            makeChangesForLevel(level: 3)
+
+        }
+      
         currentScore = currentScore! + points;
         label.text = String.init(currentScore!)
         label.run(SKAction.sequence([SKAction.run {
@@ -284,8 +368,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             self.label.fontColor = UIColor.green
             },SKAction.run {
                 self.label.fontSize = 72.0;
-                self.label.fontColor = UIColor.init(red: 130, green: 172, blue: 138, alpha: 1.0)
+                self.label.fontColor = self.scoreLabelColor
             }]))
+        if !self.isNewHighScore && (currentScore! > self.currentHighScore)  {
+            self.isNewHighScore = true;
+            self.scoreLabelColor = UIColor.orange
+            label.fontColor = self.scoreLabelColor;
+            UserDefaults.standard.set(currentScore!, forKey: highScoreStore)
+        }
+        
     }
     func moveShipLeft() {
 
@@ -316,6 +407,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         self.smoke.run(act)
     
     }
+    
+    //TODO: change 0.8?
     override func didMove(to view: SKView) {
         doBasicInitializations()
                run(SKAction.repeatForever(
@@ -324,23 +417,42 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 SKAction.wait(forDuration: 0.8)
                 ])
         ))
-        createBKG()
-        let backgroundMusic = SKAudioNode(fileNamed: "bkg.mp3")
+        createBackground()
+        let backgroundMusic = SKAudioNode(fileNamed: backgroundMusicSoundFile)
         backgroundMusic.autoplayLooped = true
         addChild(backgroundMusic)
     }
-    func createBKG(){
-        for i in 0...3{
-            let bg = SKSpriteNode.init(imageNamed: "bkg")
-            bg.name = "bg"
-            bg.size = CGSize.init(width: self.size.width, height: self.size.height)
-            bg.position = CGPoint.init(x: 0, y: CGFloat(i) * self.size.height)
-            bg.anchorPoint = CGPoint.init(x: 0.0, y: 0.0)
-            bg.zPosition = -10;
-            self.addChild(bg)
+    
+    //MARK: Background stuff
+    func createBackground(){
+        
+        if self.currentLevel == 1 {
+        
+            for i in 0...3{
+                let bg = SKSpriteNode.init(imageNamed: self.currentBackgroundImage)
+                bg.name = "bg"
+                bg.size = CGSize.init(width: self.size.width, height: self.size.height)
+                bg.position = CGPoint.init(x: 0, y: CGFloat(i) * self.size.height)
+                bg.anchorPoint = CGPoint.init(x: 0.0, y: 0.0)
+                bg.zPosition = -10;
+                self.addChild(bg)
+            }
         }
+        else{
+            self.enumerateChildNodes(withName: "bg", using: ({
+                
+                (node,error) in
+                
+                (node as! SKSpriteNode).texture = SKTexture.init(imageNamed: self.currentBackgroundImage)
+                
+            }))
+        }
+        
+        
+        
     }
-    func moveBKG() {
+   
+    func moveBackground() {
         self.enumerateChildNodes(withName: "bg", using: ({
         
         (node,error) in
@@ -354,6 +466,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }))
     }
  
+    //MARK: Random Number Generators
     func random() -> CGFloat {
         return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
     }
@@ -367,7 +480,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         let typeOf = random();
         var object = SKSpriteNode()
         if typeOf > 0.5 {
-            let obsticleTexture = SKTexture(imageNamed: "obs1")
+            let obsticleTexture = SKTexture(imageNamed: currentObsticleImage)
             object = SKSpriteNode(texture: obsticleTexture)
             object.physicsBody?.categoryBitMask = PhysicsCategory.Obsticle // 3
             object.physicsBody?.contactTestBitMask = PhysicsCategory.Ship // 4
@@ -378,7 +491,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
         }
         else{
-            object = SKSpriteNode.init(imageNamed: "gem")
+            object = SKSpriteNode.init(imageNamed: currentGemImage)
             object.physicsBody?.categoryBitMask = PhysicsCategory.Food // 3
             object.physicsBody?.contactTestBitMask = PhysicsCategory.None // 4
             object.name = "food"
@@ -405,6 +518,55 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
         object.run(SKAction.sequence([actionMove, loseAction, actionMoveDone]))
         
+    }
+    //MARK: LEVEL UPDATES
+    func makeChangesForLevel(level: Int){
+        switch level {
+        case 1:
+                self.currentLevel = 1;
+                createBackground()
+                self.currentGemImage = self.level_1_gem
+                self.currentObsticleImage = self.level_1_obsticle
+                self.obsticleThreshold = self.level_1_obsticleThreshold
+                self.foodThreshold = 1 - self.level_1_obsticleThreshold
+                self.currentBackgroundImage = self.level_1_backgroundImage
+                break;
+        case 2:
+                self.currentLevel = 2;
+                createBackground()
+                self.currentGemImage = self.level_1_gem
+                self.currentObsticleImage = self.level_1_obsticle
+                self.obsticleThreshold = self.level_1_obsticleThreshold
+                self.foodThreshold = 1 - self.level_1_obsticleThreshold
+                self.currentBackgroundImage = self.level_2_backgroundImage
+                break;
+        case 3:
+                self.currentLevel = 3;
+                createBackground()
+                self.currentGemImage = self.level_1_gem
+                self.currentObsticleImage = self.level_1_obsticle
+                self.obsticleThreshold = self.level_1_obsticleThreshold
+                self.foodThreshold = 1 - self.level_1_obsticleThreshold
+                self.currentBackgroundImage = self.level_3_backgroundImage
+                break;
+        case 4:
+                self.currentLevel = 4;
+                createBackground()
+                self.currentGemImage = self.level_1_gem
+                self.currentObsticleImage = self.level_1_obsticle
+                self.obsticleThreshold = self.level_1_obsticleThreshold
+                self.foodThreshold = 1 - self.level_1_obsticleThreshold
+                self.currentBackgroundImage = self.level_4_backgroundImage
+                break;
+        default:
+                self.currentLevel = 1;
+                createBackground()
+                self.currentGemImage = self.level_1_gem
+                self.currentObsticleImage = self.level_1_obsticle
+                self.obsticleThreshold = self.level_1_obsticleThreshold
+                self.foodThreshold = 1 - self.level_1_obsticleThreshold
+                self.currentBackgroundImage = self.level_1_backgroundImage
+        }
     }
     
 }
