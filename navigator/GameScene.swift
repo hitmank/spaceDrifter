@@ -23,8 +23,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let bigExplosionEmmitter : String = "boomBig.sks"
     
     let level_2_scoreLimit = 201
-    let level_3_scoreLimit = 401
-    let level_4_scoreLimit = 601
+    let level_3_scoreLimit = 601
+    let level_4_scoreLimit = 901
     
     let level_1_obsticle  : String = "obsticle_level_1"
     let level_2_obsticle  : String = "obsticle_level_2"
@@ -37,9 +37,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let level_4_gem  : String = "gem_level_4"
     
     let level_1_obsticleThreshold : Float = 0.5
-    let level_2_obsticleThreshold : Float = 0.6
-    let level_3_obsticleThreshold : Float = 0.7
-    let level_4_obsticleThreshold : Float = 0.8
+    let level_2_obsticleThreshold : Float = 0.45
+    let level_3_obsticleThreshold : Float = 0.4
+    let level_4_obsticleThreshold : Float = 0.35
 
     let level_1_backgroundImage : String = "background_level_1"
     let level_2_backgroundImage : String  = "background_level_2"
@@ -50,6 +50,23 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let smokeImage : String  = "smoke"
     let scoreImage : String  = "scoreLabel"
     let highScoreStore : String  = "spaceHighScore"
+    
+    let kill_points_level_1 : Int = 25;
+    let kill_points_level_2 : Int = 35;
+    let kill_points_level_3 : Int = 45;
+    let kill_points_level_4 : Int = 55;
+    
+    let perSecond_points_level_1 : Int = 1;
+    let perSecond_points_level_2 : Int = 1;
+    let perSecond_points_level_3 : Int = 1;
+    let perSecond_points_level_4 : Int = 1;
+
+    let gem_points_level_1 : Int = 20;
+    let gem_points_level_2 : Int = 30;
+    let gem_points_level_3 : Int = 40;
+    let gem_points_level_4 : Int = 50;
+
+
 
     var ship : SKSpriteNode = SKSpriteNode.init()
     var smoke : SKNode = SKNode.init()
@@ -64,8 +81,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var currentObsticleImage : String = "obsticle_level_1"
     var currentGemImage : String = "gem_level_1"
     var currentBackgroundImage : String = "background_level_1"
-    
-    
+    var current_kill_points : Int = 20
+    var current_per_second_points : Int = 10
+    var current_gem_points : Int = 20
     
     func doBasicInitializations(){
         makeChangesForLevel(level: 1)
@@ -101,7 +119,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     func updateScore(){
         var currentScore = Int.init(label.text!)
-        currentScore = currentScore! + 1;
+        currentScore = currentScore! + self.current_per_second_points;
         label.text = String.init(currentScore!)
         if !self.isNewHighScore && (currentScore! > self.currentHighScore)  {
             self.isNewHighScore = true;
@@ -194,7 +212,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
                 let label = self.childNode(withName: "scoreLabel") as! SKLabelNode
                 let currentScore = Int.init(label.text!)
-                let gameOverScene = GameOverScene(size: self.size, score: currentScore!, isHighScore: self.isNewHighScore)
+             
+                let gameOverScene : GameEndScene = SKScene.init(fileNamed: "GameOver") as! GameEndScene
+                gameOverScene.scaleMode = .aspectFill
+                gameOverScene.scoreAchieved = currentScore!
+                gameOverScene.isHighScore = self.isNewHighScore
                  self.view?.presentScene(gameOverScene, transition: reveal)
             }])
             let boomShankar = SKAudioNode(fileNamed: "boom.mp3")
@@ -218,7 +240,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
         }
         else if(secondBody.node!.name == "food"){
-            updateScoreBy(points: 10)
+            updateScoreBy(points: self.current_gem_points)
             run(SKAction.playSoundFileNamed("a.wav", waitForCompletion: false))
             secondBody.node!.removeFromParent()
             let gun = self.childNode(withName: "gun")
@@ -286,7 +308,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     
     func blowUpAObsticle(obsticle : SKNode){
-        updateScoreBy(points: 20)
+        updateScoreBy(points: self.current_kill_points)
         explosionBig(pos: CGPoint.init(x: obsticle.position.x, y: obsticle.position.y - 200))
         obsticle.removeFromParent()
     }
@@ -479,12 +501,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         let typeOf = random();
         var object = SKSpriteNode()
-        if typeOf > 0.5 {
+        if Float.init(typeOf) > self.obsticleThreshold {
             let obsticleTexture = SKTexture(imageNamed: currentObsticleImage)
             object = SKSpriteNode(texture: obsticleTexture)
             object.physicsBody?.categoryBitMask = PhysicsCategory.Obsticle // 3
             object.physicsBody?.contactTestBitMask = PhysicsCategory.Ship // 4
-            object.physicsBody = SKPhysicsBody(texture: obsticleTexture, size: CGSize.init(width: obsticleTexture.size().width/2 , height: obsticleTexture.size().height/2))
+            object.physicsBody = SKPhysicsBody(rectangleOf: CGSize.init(width: obsticleTexture.size().width, height: obsticleTexture.size().height))
  
             object.name = "obsticle"
             object.physicsBody?.usesPreciseCollisionDetection = true
@@ -530,33 +552,45 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 self.obsticleThreshold = self.level_1_obsticleThreshold
                 self.foodThreshold = 1 - self.level_1_obsticleThreshold
                 self.currentBackgroundImage = self.level_1_backgroundImage
+                self.current_per_second_points = self.perSecond_points_level_1
+                self.current_kill_points = self.kill_points_level_1
+                self.current_gem_points = self.gem_points_level_1
                 break;
         case 2:
                 self.currentLevel = 2;
-                createBackground()
-                self.currentGemImage = self.level_1_gem
-                self.currentObsticleImage = self.level_1_obsticle
-                self.obsticleThreshold = self.level_1_obsticleThreshold
-                self.foodThreshold = 1 - self.level_1_obsticleThreshold
+                self.currentGemImage = self.level_2_gem
+                self.currentObsticleImage = self.level_2_obsticle
+                self.obsticleThreshold = self.level_2_obsticleThreshold
+                self.foodThreshold = 1 - self.level_2_obsticleThreshold
                 self.currentBackgroundImage = self.level_2_backgroundImage
+                createBackground()
+                self.current_per_second_points = self.perSecond_points_level_2
+                self.current_kill_points = self.kill_points_level_2
+                self.current_gem_points = self.gem_points_level_2
                 break;
         case 3:
                 self.currentLevel = 3;
-                createBackground()
-                self.currentGemImage = self.level_1_gem
-                self.currentObsticleImage = self.level_1_obsticle
-                self.obsticleThreshold = self.level_1_obsticleThreshold
-                self.foodThreshold = 1 - self.level_1_obsticleThreshold
+                self.currentGemImage = self.level_3_gem
+                self.currentObsticleImage = self.level_3_obsticle
+                self.obsticleThreshold = self.level_3_obsticleThreshold
+                self.foodThreshold = 1 - self.level_3_obsticleThreshold
                 self.currentBackgroundImage = self.level_3_backgroundImage
+                createBackground()
+                self.current_per_second_points = self.perSecond_points_level_3
+                self.current_kill_points = self.kill_points_level_3
+                self.current_gem_points = self.gem_points_level_3
                 break;
         case 4:
                 self.currentLevel = 4;
-                createBackground()
-                self.currentGemImage = self.level_1_gem
-                self.currentObsticleImage = self.level_1_obsticle
-                self.obsticleThreshold = self.level_1_obsticleThreshold
-                self.foodThreshold = 1 - self.level_1_obsticleThreshold
+                self.currentGemImage = self.level_4_gem
+                self.currentObsticleImage = self.level_4_obsticle
+                self.obsticleThreshold = self.level_4_obsticleThreshold
+                self.foodThreshold = 1 - self.level_4_obsticleThreshold
                 self.currentBackgroundImage = self.level_4_backgroundImage
+                createBackground()
+                self.current_per_second_points = self.perSecond_points_level_4
+                self.current_kill_points = self.kill_points_level_4
+                self.current_gem_points = self.gem_points_level_4
                 break;
         default:
                 self.currentLevel = 1;
@@ -566,6 +600,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 self.obsticleThreshold = self.level_1_obsticleThreshold
                 self.foodThreshold = 1 - self.level_1_obsticleThreshold
                 self.currentBackgroundImage = self.level_1_backgroundImage
+                self.current_per_second_points = self.perSecond_points_level_1
+                self.current_kill_points = self.kill_points_level_1
+                self.current_gem_points = self.gem_points_level_1
         }
     }
     
