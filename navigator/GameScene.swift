@@ -451,13 +451,24 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         if self.currentLevel == 1 {
         
             for i in 0...3{
-                let bg = SKSpriteNode.init(imageNamed: self.currentBackgroundImage)
-                bg.name = "bg"
-                bg.size = CGSize.init(width: self.size.width, height: self.size.height)
-                bg.position = CGPoint.init(x: 0, y: CGFloat(i) * self.size.height)
-                bg.anchorPoint = CGPoint.init(x: 0.0, y: 0.0)
-                bg.zPosition = -10;
-                self.addChild(bg)
+                if i == 1 || i == 3{
+                    let bg = SKSpriteNode.init(imageNamed: "lala")
+                    bg.name = "bg"
+                    bg.size = CGSize.init(width: self.size.width, height: self.size.height)
+                    bg.position = CGPoint.init(x: 0, y: CGFloat(i) * self.size.height)
+                    bg.anchorPoint = CGPoint.init(x: 0.0, y: 0.0)
+                    bg.zPosition = -10;
+                    self.addChild(bg)
+                }
+                else{
+                    let bg = SKSpriteNode.init(imageNamed: self.currentBackgroundImage)
+                    bg.name = "bg"
+                    bg.size = CGSize.init(width: self.size.width, height: self.size.height)
+                    bg.position = CGPoint.init(x: 0, y: CGFloat(i) * self.size.height)
+                    bg.anchorPoint = CGPoint.init(x: 0.0, y: 0.0)
+                    bg.zPosition = -10;
+                    self.addChild(bg)
+                }
             }
         }
         else{
